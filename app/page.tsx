@@ -1,0 +1,1443 @@
+"use client";
+
+import Image from "next/image";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Check,
+  ChevronDown,
+  Clock3,
+  MapPin,
+  MessageCircle,
+  Phone,
+  ShieldCheck,
+  Star,
+  Stethoscope,
+  UserRoundCheck,
+  X,
+} from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
+
+const clinicPhoneDisplay = "+91 93812 19187";
+const clinicPhoneHref = "tel:+919381219187";
+const clinicWhatsApp = "919381218003";
+
+const concernOptions = [
+  "Skin",
+  "Hair & Scalp",
+  "Acne & Acne Scars",
+  "Pigmentation",
+  "Anti-Ageing",
+  "Laser Hair Reduction",
+  "Facial & Skin Maintenance",
+  "Aesthetic Treatments",
+  "Not Sure",
+  "Other",
+];
+
+const trustPoints = [
+  {
+    icon: Stethoscope,
+    title: "Dermatologist-led",
+    detail: "Care guided by medical assessment and clinical expertise",
+  },
+  {
+    icon: UserRoundCheck,
+    title: "Personalised",
+    detail: "Treatment plans built around individual concerns and goals",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Comprehensive care",
+    detail: "Skin, hair and aesthetic concerns managed under one clinic",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Progress-focused",
+    detail: "Treatment plans reviewed and adapted according to response",
+  },
+];
+
+const publications = [
+  { src: "/brand/deccan-chronicle.png", alt: "Deccan Chronicle" },
+  { src: "/brand/hindustan-times.png", alt: "Hindustan Times" },
+  { src: "/brand/new-indian-express.png", alt: "The New Indian Express" },
+  { src: "/brand/deccan-herald.png", alt: "Deccan Herald" },
+  { src: "/brand/lifestyle-asia.png", alt: "Lifestyle Asia" },
+  { src: "/brand/hauterfly.png", alt: "Hauterfly" },
+];
+
+const careAreas = [
+  {
+    title: "Skin",
+    body: "Care for acne, pigmentation, uneven tone, texture, sensitivity and other skin concerns.",
+  },
+  {
+    title: "Hair & Scalp",
+    body: "Assessment and treatment planning for hair fall, thinning, alopecia, postpartum hair loss, dandruff and scalp concerns.",
+  },
+  {
+    title: "Laser Hair Reduction",
+    body: "Dermatologist-guided Laser Hair Reduction with treatment planning according to skin and hair characteristics.",
+  },
+  {
+    title: "Chemical Peels",
+    body: "Personalised peel protocols selected according to skin type, concern and treatment goals.",
+  },
+  {
+    title: "Medi Facials",
+    body: "Clinical facial protocols designed around concerns such as hydration, dullness, congestion and skin maintenance.",
+  },
+  {
+    title: "Aesthetic Dermatology",
+    body: "Personalised aesthetic treatments for suitable concerns related to skin quality, ageing and appearance.",
+  },
+];
+
+const approachSteps = [
+  {
+    number: "01",
+    title: "Understand",
+    body: "Your concerns, history, previous treatments and goals are discussed during consultation.",
+  },
+  {
+    number: "02",
+    title: "Assess",
+    body: "Your skin, hair or aesthetic concern is evaluated to understand what may be contributing to it and what needs to be addressed.",
+  },
+  {
+    number: "03",
+    title: "Personalise",
+    body: "A treatment plan is created based on your needs, suitability and goals rather than applying the same protocol to everyone.",
+  },
+  {
+    number: "04",
+    title: "Review",
+    body: "Progress can be monitored over time, allowing treatment recommendations to evolve according to response.",
+  },
+];
+
+const helpAreas = [
+  "Acne & Acne Scars",
+  "Pigmentation & Uneven Tone",
+  "Hair Fall & Hair Thinning",
+  "Unwanted Hair",
+  "Dullness & Skin Texture",
+  "Ageing & Skin Quality",
+];
+
+const reviews = [
+  {
+    quote:
+      "I have been regularly visiting Dr Nishita's clinic for the past 2+ years and have been extremely happy with the results, be it managing my acne and skin to laser hair removal treatments.",
+    author: "Vaidehi Agarwal",
+  },
+  {
+    quote:
+      "Dr. Nishita Ranka is the best dermatologist I've visited till date. After consulting Nishita ma'am there is great improvement in just one month.",
+    author: "Shamili Praharsha",
+  },
+  {
+    quote:
+      "I am really happy that I visited this clinic and it was a great experience. I highly recommend Dr. Nishita's clinic for any skin problems.",
+    author: "Snehitha Kodali",
+  },
+  {
+    quote:
+      "It was a great experience at Nishita's Clinic, and the staff were very helpful and humble.",
+    author: "Sravani Gubba",
+  },
+  {
+    quote:
+      "Great service and wonderful experience for laser hair reduction, have seen amazing results in just 4 sessions.",
+    author: "Supraja Alleni",
+  },
+];
+
+const faqs = [
+  {
+    question: "What treatments are available at Dr. Nishita's Clinic?",
+    answer:
+      "The clinic provides dermatologist-led care across skin, hair and aesthetic concerns, including acne, pigmentation, hair loss, Laser Hair Reduction, Chemical Peels, Medi Facials and other clinical and aesthetic treatments.",
+  },
+  {
+    question: "How do I know which treatment is right for me?",
+    answer:
+      "You do not need to select a treatment before consultation. Your concerns, medical history and goals can first be assessed before appropriate treatment options are discussed.",
+  },
+  {
+    question: "Can I consult for more than one concern?",
+    answer:
+      "Yes. If you have multiple skin, hair or aesthetic concerns, these can be discussed during consultation so they can be prioritised and an appropriate treatment plan developed.",
+  },
+  {
+    question: "Are treatments personalised?",
+    answer:
+      "Treatment recommendations are made according to the concern, individual characteristics, medical history, suitability and treatment goals rather than following the same protocol for every patient.",
+  },
+  {
+    question: "Where is the clinic located?",
+    answer:
+      "The clinic is on Road No. 7, 1st Floor, Sowbhagya Abode, beside Iran Embassy, Banjara Hills, Telangana 500034.",
+  },
+];
+
+type FormErrors = Partial<Record<"name" | "phone" | "area", string>>;
+type FormValues = Record<"name" | "phone" | "area", string>;
+type StickyFormPhase = "hidden" | "visible" | "hiding";
+type StickyFormMode = "auto" | "mobile";
+type MobileCtaTone = "on-light" | "on-dark";
+
+type ConcernDropdownProps = {
+  className?: string;
+  error?: string;
+  id: string;
+  label: string;
+  options: string[];
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+function ConcernDropdown({
+  className,
+  error,
+  id,
+  label,
+  options,
+  placeholder,
+  value,
+  onChange,
+}: ConcernDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const menuId = `${id}-options`;
+  const errorId = `${id}-error`;
+
+  const focusOption = useCallback((index: number) => {
+    window.requestAnimationFrame(() => optionRefs.current[index]?.focus());
+  }, []);
+
+  const openMenu = useCallback(
+    (preferredIndex?: number) => {
+      const selectedIndex = options.indexOf(value);
+      const nextIndex =
+        preferredIndex ?? (selectedIndex >= 0 ? selectedIndex : 0);
+      setActiveIndex(nextIndex);
+      setIsOpen(true);
+      focusOption(nextIndex);
+    },
+    [focusOption, options, value],
+  );
+
+  const closeMenu = useCallback((restoreFocus = false) => {
+    setIsOpen(false);
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => triggerRef.current?.focus());
+    }
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [closeMenu]);
+
+  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "ArrowDown" || event.key === "Home") {
+      event.preventDefault();
+      openMenu(event.key === "Home" ? 0 : undefined);
+    }
+
+    if (event.key === "ArrowUp" || event.key === "End") {
+      event.preventDefault();
+      openMenu(event.key === "End" ? options.length - 1 : undefined);
+    }
+
+    if (event.key === "Escape" && isOpen) {
+      event.preventDefault();
+      closeMenu(true);
+    }
+  }
+
+  function handleOptionKeyDown(
+    event: ReactKeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onChange(options[index]);
+      closeMenu(true);
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMenu(true);
+      return;
+    }
+
+    if (event.key === "Tab") {
+      closeMenu();
+      return;
+    }
+
+    let nextIndex = index;
+    if (event.key === "ArrowDown") nextIndex = (index + 1) % options.length;
+    if (event.key === "ArrowUp") {
+      nextIndex = (index - 1 + options.length) % options.length;
+    }
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = options.length - 1;
+
+    if (nextIndex !== index) {
+      event.preventDefault();
+      setActiveIndex(nextIndex);
+      focusOption(nextIndex);
+    }
+  }
+
+  return (
+    <div className={`field-group custom-select-field${className ? ` ${className}` : ""}`}>
+      <label id={`${id}-label`} htmlFor={id}>
+        {label} <span className="required-mark" aria-hidden="true">*</span>
+      </label>
+      <input type="hidden" name="area" value={value} />
+      <div ref={rootRef} className="custom-select" data-open={isOpen}>
+        <button
+          ref={triggerRef}
+          id={id}
+          className="custom-select-trigger"
+          type="button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-controls={menuId}
+          aria-labelledby={`${id}-label ${id}-value`}
+          data-invalid={Boolean(error)}
+          aria-describedby={error ? errorId : undefined}
+          onClick={() => (isOpen ? closeMenu() : openMenu())}
+          onKeyDown={handleTriggerKeyDown}
+        >
+          <span id={`${id}-value`} className={value ? undefined : "is-placeholder"}>
+            {value || placeholder}
+          </span>
+          <ChevronDown className="custom-select-chevron" size={18} aria-hidden="true" />
+        </button>
+        <div
+          id={menuId}
+          className="custom-select-menu"
+          role="listbox"
+          aria-labelledby={`${id}-label`}
+          aria-hidden={!isOpen}
+        >
+          {options.map((option, index) => (
+            <button
+              key={option}
+              ref={(element) => {
+                optionRefs.current[index] = element;
+              }}
+              className="custom-select-option"
+              type="button"
+              role="option"
+              aria-selected={value === option}
+              tabIndex={isOpen && index === activeIndex ? 0 : -1}
+              onClick={() => {
+                onChange(option);
+                closeMenu(true);
+              }}
+              onFocus={() => setActiveIndex(index)}
+              onKeyDown={(event) => handleOptionKeyDown(event, index)}
+            >
+              <span>{option}</span>
+              <Check size={16} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+      </div>
+      {error && (
+        <span className="field-error" id={errorId} role="alert">
+          {error}
+        </span>
+      )}
+    </div>
+  );
+}
+
+const getBackgroundLuminance = (element: Element | null) => {
+  let currentElement: Element | null = element;
+
+  while (currentElement && currentElement !== document.documentElement) {
+    const backgroundColor = window.getComputedStyle(currentElement).backgroundColor;
+    const match = backgroundColor.match(
+      /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/,
+    );
+
+    if (match && Number(match[4] ?? 1) > 0.08) {
+      const [, red, green, blue] = match.map(Number);
+      return (red * 299 + green * 587 + blue * 114) / 1000;
+    }
+
+    currentElement = currentElement.parentElement;
+  }
+
+  return 255;
+};
+
+export default function Home() {
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [formValues, setFormValues] = useState<FormValues>({
+    name: "",
+    phone: "",
+    area: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+  const [stickyFormPhase, setStickyFormPhase] =
+    useState<StickyFormPhase>("hidden");
+  const [stickyFormMode, setStickyFormMode] =
+    useState<StickyFormMode | null>(null);
+  const [stickyFormHeight, setStickyFormHeight] = useState(0);
+  const [mobileCtaVisible, setMobileCtaVisible] = useState(false);
+  const [mobileCtaTone, setMobileCtaTone] =
+    useState<MobileCtaTone>("on-light");
+  const [reviewsPaused, setReviewsPaused] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const stickyFormRef = useRef<HTMLElement>(null);
+  const stickyCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileCtaRef = useRef<HTMLButtonElement>(null);
+  const stickyPhaseRef = useRef<StickyFormPhase>("hidden");
+  const stickyModeRef = useRef<StickyFormMode | null>(null);
+  const stickyDismissedRef = useRef(false);
+  const stickyExitTimerRef = useRef<number | null>(null);
+  const stickyFormMounted = stickyFormPhase !== "hidden";
+  const stickyFormHiding = stickyFormPhase === "hiding";
+  const mobileConsultationOpen =
+    stickyFormPhase === "visible" && stickyFormMode === "mobile";
+  const mobileCtaInteractive = mobileCtaVisible && !stickyFormMounted;
+
+  const clearStickyExitTimer = useCallback(() => {
+    if (stickyExitTimerRef.current === null) return;
+    window.clearTimeout(stickyExitTimerRef.current);
+    stickyExitTimerRef.current = null;
+  }, []);
+
+  const showStickyForm = useCallback((mode: StickyFormMode) => {
+    if (mode === "auto" && stickyDismissedRef.current) return;
+
+    clearStickyExitTimer();
+    stickyModeRef.current = mode;
+    setStickyFormMode(mode);
+    if (stickyPhaseRef.current === "visible") return;
+
+    stickyPhaseRef.current = "visible";
+    setStickyFormPhase("visible");
+  }, [clearStickyExitTimer]);
+
+  const hideStickyForm = useCallback(() => {
+    if (
+      stickyPhaseRef.current === "hidden" ||
+      stickyPhaseRef.current === "hiding"
+    ) {
+      return;
+    }
+
+    clearStickyExitTimer();
+    const closingMode = stickyModeRef.current;
+    stickyPhaseRef.current = "hiding";
+    setStickyFormPhase("hiding");
+    stickyExitTimerRef.current = window.setTimeout(() => {
+      stickyPhaseRef.current = "hidden";
+      stickyModeRef.current = null;
+      stickyExitTimerRef.current = null;
+      setStickyFormMode(null);
+      setStickyFormPhase("hidden");
+
+      if (
+        closingMode === "mobile" &&
+        window.matchMedia("(max-width: 560px)").matches
+      ) {
+        window.requestAnimationFrame(() => {
+          mobileCtaRef.current?.focus({ preventScroll: true });
+        });
+      }
+    }, 320);
+  }, [clearStickyExitTimer]);
+
+  const dismissStickyForm = useCallback(() => {
+    if (stickyModeRef.current === "auto") {
+      stickyDismissedRef.current = true;
+    }
+    hideStickyForm();
+  }, [hideStickyForm]);
+
+  const openMobileConsultation = useCallback(() => {
+    stickyDismissedRef.current = false;
+    showStickyForm("mobile");
+  }, [showStickyForm]);
+
+  const handleConsultationLinkClick = useCallback(
+    (event: ReactMouseEvent<HTMLAnchorElement>) => {
+      if (!window.matchMedia("(max-width: 560px)").matches) return;
+
+      event.preventDefault();
+      openMobileConsultation();
+    },
+    [openMobileConsultation],
+  );
+
+  useEffect(() => {
+    let animationFrame = 0;
+
+    const updateStickyVisibility = () => {
+      const heroSection = document.getElementById("top");
+      if (!heroSection) return;
+
+      const hasPassedHero = heroSection.getBoundingClientRect().bottom <= 68;
+      const isMobile = window.matchMedia("(max-width: 560px)").matches;
+      if (isMobile) {
+        setMobileCtaVisible(true);
+        const ctaElement = mobileCtaRef.current;
+        const sampleX = window.innerWidth / 2;
+        const sampleY = window.innerHeight - 36;
+        const backdropElement =
+          document
+            .elementsFromPoint(sampleX, sampleY)
+            .find((element) => !ctaElement?.contains(element))
+            ?.closest("section, footer, header, main") ??
+          document.body;
+        const backdropLuminance = getBackgroundLuminance(backdropElement);
+        setMobileCtaTone(backdropLuminance < 150 ? "on-dark" : "on-light");
+        if (stickyModeRef.current === "auto") hideStickyForm();
+        return;
+      }
+
+      setMobileCtaVisible(false);
+      if (hasPassedHero) {
+        showStickyForm("auto");
+      } else {
+        stickyDismissedRef.current = false;
+        hideStickyForm();
+      }
+    };
+
+    const requestUpdate = () => {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = window.requestAnimationFrame(updateStickyVisibility);
+    };
+
+    requestUpdate();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      clearStickyExitTimer();
+    };
+  }, [clearStickyExitTimer, hideStickyForm, showStickyForm]);
+
+  useEffect(() => {
+    if (!mobileConsultationOpen) return;
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      stickyCloseButtonRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(focusFrame);
+  }, [mobileConsultationOpen]);
+
+  useEffect(() => {
+    const revealElements = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal]"),
+    );
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) {
+      revealElements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "0px 0px 8% 0px",
+      },
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!stickyFormMounted) return;
+
+    const stickyForm = stickyFormRef.current;
+    if (!stickyForm) return;
+
+    const updateHeight = () => {
+      setStickyFormHeight(
+        Math.ceil(stickyForm.getBoundingClientRect().height),
+      );
+    };
+
+    const initialMeasureFrame = window.requestAnimationFrame(updateHeight);
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(stickyForm);
+
+    return () => {
+      window.cancelAnimationFrame(initialMeasureFrame);
+      resizeObserver.disconnect();
+    };
+  }, [stickyFormMounted]);
+
+  function updateField(field: keyof FormValues, value: string) {
+    setFormValues((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: undefined }));
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name") ?? "").trim();
+    const phone = String(form.get("phone") ?? "").trim();
+    const area = String(form.get("area") ?? "").trim();
+    const digits = phone.replace(/\D/g, "");
+    const nextErrors: FormErrors = {};
+
+    if (name.length < 2) nextErrors.name = "Please enter your full name.";
+    if (digits.length < 10 || digits.length > 13) {
+      nextErrors.phone = "Please enter a valid mobile number.";
+    }
+    if (!area) nextErrors.area = "Please choose a concern.";
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      const firstInvalidField = Object.keys(nextErrors)[0];
+      const fieldPrefix = event.currentTarget.dataset.formPrefix ?? "";
+      window.requestAnimationFrame(() => {
+        document.getElementById(fieldPrefix + firstInvalidField)?.focus();
+      });
+      return;
+    }
+
+    const campaignKeys = [
+      ["utm_source", "UTM source"],
+      ["utm_medium", "UTM medium"],
+      ["utm_campaign", "UTM campaign"],
+      ["utm_content", "UTM content"],
+      ["utm_term", "UTM term"],
+    ] as const;
+    const searchParams = new URLSearchParams(window.location.search);
+    const campaignDetails = campaignKeys.flatMap(([key, label]) => {
+      const value = searchParams.get(key)?.trim();
+      return value ? [`${label}: ${value}`] : [];
+    });
+    const message = [
+      "Hello, I would like to request a consultation at Dr. Nishita's Clinic.",
+      "Name: " + name,
+      "Mobile: " + phone,
+      "Concern: " + area,
+      ...campaignDetails,
+    ].join("\n");
+
+    (
+      window as Window & {
+        dataLayer?: Array<Record<string, string>>;
+      }
+    ).dataLayer?.push({
+      event: "consultation_form_submit",
+      treatment: "brand_consultation",
+      selected_concern: area,
+      utm_source: searchParams.get("utm_source") ?? "",
+      utm_medium: searchParams.get("utm_medium") ?? "",
+      utm_campaign: searchParams.get("utm_campaign") ?? "",
+    });
+
+    const whatsappUrl =
+      "https://wa.me/" + clinicWhatsApp + "?text=" + encodeURIComponent(message);
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    setSubmitted(true);
+  }
+
+  const consultationForm = (prefix = "") => (
+    <>
+      <div className="field-group">
+        <label htmlFor={`${prefix}name`}>
+          Full name <span className="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input
+          id={`${prefix}name`}
+          name="name"
+          type="text"
+          autoComplete="name"
+          required
+          value={formValues.name}
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? `${prefix}name-error` : undefined}
+          onChange={(event) => updateField("name", event.target.value)}
+        />
+        {errors.name && (
+          <span className="field-error" id={`${prefix}name-error`} role="alert">
+            {errors.name}
+          </span>
+        )}
+      </div>
+      <div className="field-group">
+        <label htmlFor={`${prefix}phone`}>
+          Mobile number <span className="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input
+          id={`${prefix}phone`}
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="+91"
+          required
+          value={formValues.phone}
+          aria-invalid={Boolean(errors.phone)}
+          aria-describedby={errors.phone ? `${prefix}phone-error` : undefined}
+          onChange={(event) => updateField("phone", event.target.value)}
+        />
+        {errors.phone && (
+          <span className="field-error" id={`${prefix}phone-error`} role="alert">
+            {errors.phone}
+          </span>
+        )}
+      </div>
+      <ConcernDropdown
+        className={prefix ? "sticky-area-field" : undefined}
+        id={`${prefix}area`}
+        label="Primary concern"
+        placeholder="Select a concern"
+        options={concernOptions}
+        value={formValues.area}
+        error={errors.area}
+        onChange={(value) => updateField("area", value)}
+      />
+    </>
+  );
+
+  return (
+    <main id="main-content" className="page-brand page-brand">
+      <a className="skip-link" href="#hero-title">
+        Skip to consultation information
+      </a>
+      <header className="site-header" aria-label="Clinic header">
+        <div className="header-inner">
+          <a
+            className="brand-link"
+            href="#top"
+            aria-label="Dr. Nishita's Clinic home"
+          >
+            <Image
+              src="/brand/logo.png"
+              alt="Dr. Nishita's Clinic for Skin, Hair and Aesthetics"
+              width={500}
+              height={89}
+              priority
+              unoptimized
+            />
+          </a>
+          <div className="header-actions">
+            <span className="header-location">Banjara Hills, Hyderabad</span>
+            <a
+              className="call-link"
+              href={clinicPhoneHref}
+              aria-label={"Call clinic on " + clinicPhoneDisplay}
+            >
+              <Phone size={18} aria-hidden="true" />
+              <span>Call clinic</span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section className="hero" id="top" aria-labelledby="hero-title">
+        <div className="hero-inner">
+          <div className="hero-copy">
+            <div
+              className="rating-line hero-reveal"
+              style={{ "--delay": "80ms" } as CSSProperties}
+            >
+              <Image
+                src="/brand/google.png"
+                alt="Google"
+                width={36}
+                height={36}
+                unoptimized
+                loading="eager"
+              />
+              <span className="rating-score">4.8</span>
+              <span className="stars" aria-label="4.8 out of 5 stars">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <Star
+                    key={index}
+                    size={15}
+                    fill="currentColor"
+                    aria-hidden="true"
+                  />
+                ))}
+              </span>
+              <span className="rating-count">700+ patient reviews</span>
+            </div>
+            <p
+              className="eyebrow hero-reveal"
+              style={{ "--delay": "150ms" } as CSSProperties}
+            >
+              Dermatology, Hair &amp; Aesthetic Care in Banjara Hills, Hyderabad
+            </p>
+            <h1
+              id="hero-title"
+              className="hero-reveal"
+              style={{ "--delay": "220ms" } as CSSProperties}
+            >
+              Real results for skin and hair. Designed for you.
+            </h1>
+            <div className="hero-media-frame">
+              <Image
+                className="hero-media hero-media-desktop"
+                src="/brand/dr-nishita.jpg"
+                alt="Dr. Nishita Ranka at her dermatology, hair and aesthetics clinic"
+                fill
+                priority
+                unoptimized
+                sizes="(max-width: 560px) 0px, 100vw"
+              />
+              <Image
+                className="hero-media hero-media-mobile"
+                src="/brand/dr-nishita.jpg"
+                alt="Dr. Nishita Ranka at her dermatology, hair and aesthetics clinic"
+                fill
+                priority
+                unoptimized
+                sizes="(max-width: 560px) 100vw, 0px"
+              />
+            </div>
+            <p
+              className="hero-intro hero-reveal"
+              style={{ "--delay": "300ms" } as CSSProperties}
+            >
+              Dermatologist-designed care for your skin and hair. We map out
+              personalised, clinical treatment plans to address your exact goals
+              and needs.
+            </p>
+            <a
+              className="hero-mobile-cta hero-reveal"
+              href="#consultation"
+              onClick={handleConsultationLinkClick}
+              style={{ "--delay": "340ms" } as CSSProperties}
+            >
+              Request a consultation
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <ul
+              className="hero-benefits hero-reveal"
+              style={{ "--delay": "360ms" } as CSSProperties}
+            >
+              {[
+                "Dermatologist-led skin, hair and aesthetic care",
+                "Personalised treatment planning",
+                "Clinical expertise with advanced treatment options",
+              ].map((benefit) => (
+                <li key={benefit}>
+                  <Check size={18} aria-hidden="true" /> {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <form
+            className="consultation-form hero-reveal"
+            id="consultation"
+            onSubmit={handleSubmit}
+            data-form-prefix=""
+            noValidate
+            style={{ "--delay": "440ms" } as CSSProperties}
+          >
+            <div className="form-heading">
+              <h2>Tell us what you&apos;d like help with.</h2>
+              <p>Three details. Less than a minute.</p>
+            </div>
+            {consultationForm()}
+            <div className="form-submit">
+              <button type="submit" data-testid="consultation-submit">
+                {submitted ? "Continue on WhatsApp" : "Request a consultation"}
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <p className="form-disclaimer">
+              * By continuing, you agree to be contacted by the clinic.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section className="proof-band" aria-label="Clinic care principles">
+        <div className="section-inner proof-grid">
+          {trustPoints.map(({ icon: Icon, title, detail }, index) => (
+            <div
+              className="proof-item"
+              key={title}
+              data-reveal="rise"
+              style={
+                { "--reveal-delay": `${index * 70}ms` } as CSSProperties
+              }
+            >
+              <Icon size={24} strokeWidth={1.5} aria-hidden="true" />
+              <div>
+                <strong>{title}</strong>
+                <span>{detail}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="featured-section" aria-labelledby="featured-title">
+        <div className="section-inner">
+          <p className="section-label" id="featured-title" data-reveal="fade">
+            Dr. Ranka has been featured in
+          </p>
+        </div>
+        <div className="publication-marquee" data-reveal="fade">
+          <div className="publication-track">
+            {[0, 1].map((groupIndex) => (
+              <div
+                className="publication-group"
+                key={groupIndex}
+                aria-hidden={groupIndex === 1}
+              >
+                {publications.map((publication) => (
+                  <div
+                    className="publication-logo"
+                    key={`${groupIndex}-${publication.alt}`}
+                  >
+                    <Image
+                      src={publication.src}
+                      alt={groupIndex === 0 ? publication.alt : ""}
+                      width={300}
+                      height={150}
+                      unoptimized
+                      loading="eager"
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="doctor-section" aria-labelledby="doctor-title">
+        <div className="doctor-media" data-reveal="left">
+          <Image
+            src="/brand/dr-nishita.jpg"
+            alt="Dr. Nishita Ranka"
+            fill
+            unoptimized
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, 45vw"
+          />
+        </div>
+        <div className="doctor-copy" data-reveal="right">
+          <p className="eyebrow">Dermatologist and founder</p>
+          <h2 id="doctor-title">Medical precision, made personal.</h2>
+          <p className="large-copy">
+            Dr. Nishita Ranka is a board-certified dermatologist with over eight
+            years of experience across clinical and aesthetic dermatology.
+          </p>
+          <p>
+            At her Banjara Hills clinic, Dr. Ranka combines clinical dermatology
+            with aesthetic care to create treatment plans based on individual
+            concerns, skin or hair needs, medical history and personal goals.
+          </p>
+          <div className="doctor-signals">
+            {[
+              { icon: BadgeCheck, text: "Board-certified dermatologist" },
+              { icon: ShieldCheck, text: "Clinical and aesthetic care" },
+            ].map(({ icon: Icon, text }) => (
+              <span key={text}>
+                <Icon size={20} aria-hidden="true" /> {text}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="brand-care-section" aria-labelledby="brand-care-title">
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Skin, Hair &amp; Aesthetic Care</p>
+            <h2 id="brand-care-title">
+              Expertise across the concerns that bring you here
+            </h2>
+            <p>
+              From everyday skin and hair concerns to advanced aesthetic
+              treatments, care begins by understanding your concerns and
+              determining an appropriate treatment pathway.
+            </p>
+          </div>
+          <div className="brand-care-grid" aria-label="Areas of care">
+            {careAreas.map((area, index) => (
+              <article
+                className="brand-care-card"
+                key={area.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{area.title}</h3>
+                <p>{area.body}</p>
+              </article>
+            ))}
+          </div>
+          <a
+            className="primary-button brand-care-cta"
+            href="#consultation"
+            onClick={handleConsultationLinkClick}
+            data-reveal="fade"
+          >
+            Explore your treatment options <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+
+      <section className="process-section" aria-labelledby="process-title">
+        <div className="section-inner">
+          <div className="section-heading split-heading" data-reveal="rise">
+            <div>
+              <p className="eyebrow">The Clinic Approach</p>
+              <h2 id="process-title">Start with the concern. Build the right plan.</h2>
+            </div>
+            <p>
+              Different concerns, and different people, need different
+              approaches. Care begins with understanding what is happening
+              before deciding what treatment may be appropriate.
+            </p>
+          </div>
+          <div className="process-grid">
+            {approachSteps.map((step, index) => (
+              <article
+                className="process-step"
+                key={step.number}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 80}ms` } as CSSProperties
+                }
+              >
+                <span className="step-number">{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
+            ))}
+          </div>
+          <p className="medical-note" data-reveal="fade">
+            Consultation helps determine which treatment pathway may be
+            appropriate for your concern. Suitability and response vary.
+          </p>
+        </div>
+      </section>
+
+      <section className="areas-section" aria-labelledby="areas-title">
+        <div className="section-inner areas-layout">
+          <div className="areas-copy" data-reveal="left">
+            <p className="eyebrow">What can we help with?</p>
+            <h2 id="areas-title">What would you like to address?</h2>
+            <p>
+              Explore dermatologist-led care across skin, hair and aesthetic
+              concerns.
+            </p>
+            <a
+              className="primary-button"
+              href="#consultation"
+              onClick={handleConsultationLinkClick}
+            >
+              Discuss your concern <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
+          <div className="areas-list" aria-label="Treatment areas">
+            {helpAreas.map((area, index) => (
+              <div
+                key={area}
+                data-reveal="right"
+                style={
+                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{area}</strong>
+                <Check size={18} aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="treatment-choice-section"
+        aria-labelledby="treatment-choice-title"
+      >
+        <div className="section-inner treatment-choice-inner">
+          <div data-reveal="left">
+            <p className="eyebrow">Not sure which treatment you need?</p>
+            <h2 id="treatment-choice-title">
+              You don&apos;t need to choose a treatment before you arrive.
+            </h2>
+          </div>
+          <div className="treatment-choice-copy" data-reveal="right">
+            <p>
+              If you know what you want to improve but aren&apos;t sure which
+              treatment is appropriate, begin with a consultation. Your concern
+              can be assessed before suitable options are discussed with you.
+            </p>
+            <p>
+              Whether you&apos;re dealing with persistent acne, pigmentation,
+              hair fall, unwanted hair or simply want to improve the overall
+              quality of your skin, the starting point remains the same:
+              understanding what your skin or hair actually needs.
+            </p>
+            <a
+              className="primary-button"
+              href="#consultation"
+              onClick={handleConsultationLinkClick}
+            >
+              Request a consultation <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="reviews-section" aria-labelledby="reviews-title">
+        <div className="section-inner">
+          <div className="review-heading" data-reveal="rise">
+            <div>
+              <p className="eyebrow">Patient voices</p>
+              <h2 id="reviews-title">
+                The experience matters as much as the plan.
+              </h2>
+            </div>
+            <div className="review-score">
+              <Image
+                src="/brand/google.png"
+                alt="Google"
+                width={48}
+                height={48}
+                unoptimized
+                loading="eager"
+              />
+              <span>4.8</span>
+              <small>from 700+ reviews</small>
+            </div>
+          </div>
+          <div
+            className={`review-grid is-visible ${reviewsPaused ? "is-paused" : ""}`}
+            data-reveal="rise"
+            role="button"
+            tabIndex={0}
+            aria-pressed={reviewsPaused}
+            aria-label={
+              reviewsPaused
+                ? "Resume testimonial scrolling"
+                : "Pause testimonial scrolling"
+            }
+            onClick={() => setReviewsPaused((current) => !current)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" && event.key !== " ") return;
+              event.preventDefault();
+              setReviewsPaused((current) => !current);
+            }}
+          >
+            <div className="review-track">
+              {[0, 1].map((groupIndex) => (
+                <div
+                  className="review-group"
+                  key={groupIndex}
+                  aria-hidden={groupIndex === 1}
+                >
+                  {reviews.map((review, index) => (
+                    <blockquote
+                      key={`${review.author}-${groupIndex}-${index}`}
+                      style={
+                        {
+                          "--reveal-delay": `${index * 70}ms`,
+                        } as CSSProperties
+                      }
+                    >
+                      <span className="quote-mark" aria-hidden="true">
+                        &quot;
+                      </span>
+                      <p>&quot;{review.quote}&quot;</p>
+                      <footer>{review.author}</footer>
+                    </blockquote>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="medical-note" data-reveal="fade">
+            Selected excerpts from patient reviews. Individual experiences and
+            results vary.
+          </p>
+        </div>
+      </section>
+
+      <section className="faq-section" aria-labelledby="faq-title">
+        <div className="section-inner faq-layout">
+          <div className="faq-intro" data-reveal="left">
+            <p className="eyebrow">Clear answers</p>
+            <h2 id="faq-title">Questions worth asking before treatment.</h2>
+            <p>
+              These answers are general information. Your consultation
+              determines what is appropriate for you.
+            </p>
+          </div>
+          <div className="faq-list">
+            {faqs.map((faq, index) => (
+              <div
+                className="faq-item"
+                key={faq.question}
+                data-reveal="right"
+                style={
+                  { "--reveal-delay": `${index * 60}ms` } as CSSProperties
+                }
+              >
+                <button
+                  className="faq-trigger"
+                  type="button"
+                  aria-expanded={openFaqIndex === index}
+                  aria-controls={`faq-answer-${index}`}
+                  onClick={() =>
+                    setOpenFaqIndex((current) =>
+                      current === index ? null : index,
+                    )
+                  }
+                >
+                  {faq.question}
+                  <span aria-hidden="true">+</span>
+                </button>
+                <div
+                  className="faq-answer"
+                  id={`faq-answer-${index}`}
+                  aria-hidden={openFaqIndex !== index}
+                >
+                  <p>{faq.answer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="final-cta" aria-labelledby="final-cta-title">
+        <Image
+          src="/brand/clinic.jpg"
+          alt="Reception at Dr. Nishita's Clinic in Banjara Hills"
+          fill
+          unoptimized
+          loading="eager"
+          sizes="100vw"
+        />
+        <div className="final-cta-inner" data-reveal="rise">
+          <p className="eyebrow">Banjara Hills, Hyderabad</p>
+          <h2 id="final-cta-title">
+            Start with the concern. We&apos;ll help plan the next step.
+          </h2>
+          <p>
+            Tell us what you would like help with. The clinic team will help
+            arrange a consultation at Banjara Hills and guide you through
+            suitable skin, hair or aesthetic care options.
+          </p>
+          <div className="cta-actions">
+            <a
+              className="primary-button"
+              href="#consultation"
+              onClick={handleConsultationLinkClick}
+            >
+              Request a consultation <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a className="secondary-button" href={clinicPhoneHref}>
+              <Phone size={18} aria-hidden="true" /> Call {clinicPhoneDisplay}
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="clinic-details" aria-label="Clinic details">
+        <div className="section-inner">
+          <div className="details-grid">
+            <div data-reveal="rise">
+              <MapPin size={22} aria-hidden="true" />
+              <h3>Visit the clinic</h3>
+              <p>
+                Road No. 7, 1st Floor, Sowbhagya Abode, beside Iran Embassy,
+                Banjara Hills, Telangana 500034.
+              </p>
+            </div>
+            <div
+              data-reveal="rise"
+              style={{ "--reveal-delay": "80ms" } as CSSProperties}
+            >
+              <Clock3 size={22} aria-hidden="true" />
+              <h3>Clinic hours</h3>
+              <p>Monday to Saturday, 10:00 AM to 7:00 PM. Sunday closed.</p>
+            </div>
+            <div
+              data-reveal="rise"
+              style={{ "--reveal-delay": "160ms" } as CSSProperties}
+            >
+              <MessageCircle size={22} aria-hidden="true" />
+              <h3>Speak with the team</h3>
+              <p>
+                {clinicPhoneDisplay}
+                <br />
+                support@drnishitaranka.com
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="legal-section" aria-label="Privacy and terms">
+        <div className="section-inner legal-grid">
+          <div id="privacy" data-reveal="left">
+            <h2>Privacy notice</h2>
+            <p>
+              Details entered in the consultation form are placed into a
+              WhatsApp message that you choose to send to Dr. Nishita&apos;s
+              Clinic. The clinic uses this information to respond to your
+              enquiry and coordinate care. To request access, correction or
+              deletion, email support@drnishitaranka.com.
+            </p>
+          </div>
+          <div id="terms" data-reveal="right">
+            <h2>Terms and medical note</h2>
+            <p>
+              This page provides general information and does not replace a
+              medical consultation. Treatment suitability, planning, pricing and
+              expected response are determined after individual assessment.
+              Results vary.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="footer-inner" data-reveal="fade">
+          <div className="footer-brand">
+            <Image
+              src="/brand/logo.png"
+              alt="Dr. Nishita's Clinic"
+              width={500}
+              height={89}
+              unoptimized
+              loading="eager"
+            />
+            <div className="footer-meta">
+              <nav aria-label="Legal links">
+                <a href="#privacy">Privacy Policy</a>
+                <span aria-hidden="true">|</span>
+                <a href="#terms">Terms &amp; Conditions</a>
+              </nav>
+              <p>(c) 2026 Dr. Nishita Ranka. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      <div
+        className="sticky-form-spacer"
+        aria-hidden="true"
+        style={{
+          height: stickyFormMounted ? `${stickyFormHeight}px` : "0px",
+        }}
+      />
+
+      {stickyFormMounted && (
+        <section
+          id="mobile-consultation-sheet"
+          ref={stickyFormRef}
+          className={`sticky-consultation ${
+            stickyFormHiding ? "is-hiding" : "is-showing"
+          }`}
+          aria-label="Sticky consultation form"
+          data-testid="sticky-consultation"
+        >
+          <button
+            ref={stickyCloseButtonRef}
+            className="sticky-form-close"
+            type="button"
+            aria-label="Close sticky consultation form"
+            title="Close"
+            onClick={dismissStickyForm}
+          >
+            <X size={18} aria-hidden="true" />
+          </button>
+          <form
+            className="sticky-consultation-form"
+            onSubmit={handleSubmit}
+            data-form-prefix="sticky-"
+            noValidate
+          >
+            <div className="sticky-form-heading">
+              <h2>Tell us what you&apos;d like help with.</h2>
+            </div>
+            {consultationForm("sticky-")}
+            <div className="sticky-form-submit">
+              <button type="submit" data-testid="sticky-consultation-submit">
+                {submitted ? "Continue on WhatsApp" : "Request a consultation"}
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <p className="sticky-form-disclaimer">
+              * By continuing, you agree to be contacted by the clinic.
+            </p>
+          </form>
+        </section>
+      )}
+
+      <button
+        ref={mobileCtaRef}
+        className={`mobile-sticky-cta ${
+          mobileCtaVisible ? "is-visible" : ""
+        } is-${mobileCtaTone} ${stickyFormMounted ? "is-sheet-open" : ""}`}
+        type="button"
+        aria-controls="mobile-consultation-sheet"
+        aria-expanded={mobileConsultationOpen}
+        aria-hidden={!mobileCtaInteractive}
+        tabIndex={mobileCtaInteractive ? undefined : -1}
+        onClick={openMobileConsultation}
+      >
+        Request a consultation <ArrowRight size={18} aria-hidden="true" />
+      </button>
+    </main>
+  );
+}
