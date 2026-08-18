@@ -823,8 +823,8 @@ export default function Home() {
             <div className="hero-media-frame">
               <Image
                 className="hero-media hero-media-desktop"
-                src="/brand/dr-nishita.jpg"
-                alt="Dr. Nishita Ranka at her dermatology, hair and aesthetics clinic"
+                src="/brand/hero-clinic-doctor.jpg"
+                alt="Dr. Nishita Ranka inside her dermatology and aesthetics clinic treatment room"
                 fill
                 priority
                 unoptimized
@@ -832,8 +832,8 @@ export default function Home() {
               />
               <Image
                 className="hero-media hero-media-mobile"
-                src="/brand/dr-nishita.jpg"
-                alt="Dr. Nishita Ranka at her dermatology, hair and aesthetics clinic"
+                src="/brand/hero-clinic-doctor.jpg"
+                alt="Dr. Nishita Ranka inside her dermatology and aesthetics clinic treatment room"
                 fill
                 priority
                 unoptimized
