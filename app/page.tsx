@@ -768,14 +768,14 @@ export default function Home() {
           </a>
           <div className="header-actions">
             <span className="header-location">Banjara Hills, Hyderabad</span>
-            <a
+            {/* <a
               className="call-link"
               href={clinicPhoneHref}
               aria-label={"Call clinic on " + clinicPhoneDisplay}
             >
               <Phone size={18} aria-hidden="true" />
               <span>Call clinic</span>
-            </a>
+            </a> */}
           </div>
         </div>
       </header>
@@ -1295,9 +1295,9 @@ export default function Home() {
             >
               Request a consultation <ArrowRight size={18} aria-hidden="true" />
             </a>
-            <a className="secondary-button" href={clinicPhoneHref}>
+            {/* <a className="secondary-button" href={clinicPhoneHref}>
               <Phone size={18} aria-hidden="true" /> Call {clinicPhoneDisplay}
-            </a>
+            </a> */}
           </div>
         </div>
       </section>
