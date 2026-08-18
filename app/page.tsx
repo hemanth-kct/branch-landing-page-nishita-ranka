@@ -29,7 +29,6 @@ import {
 
 const clinicPhoneDisplay = "+91 93812 19187";
 const clinicPhoneHref = "tel:+919381219187";
-const clinicWhatsApp = "919381218003";
 
 const concernOptions = [
   "Skin",
@@ -191,7 +190,7 @@ const faqs = [
   },
 ];
 
-type FormErrors = Partial<Record<"name" | "phone" | "area", string>>;
+type FormErrors = Partial<Record<"name" | "phone" | "area" | "submit", string>>;
 type FormValues = Record<"name" | "phone" | "area", string>;
 type StickyFormPhase = "hidden" | "visible" | "hiding";
 type StickyFormMode = "auto" | "mobile";
@@ -407,7 +406,7 @@ export default function Home() {
     phone: "",
     area: "",
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [stickyFormPhase, setStickyFormPhase] =
     useState<StickyFormPhase>("hidden");
   const [stickyFormMode, setStickyFormMode] =
@@ -621,8 +620,10 @@ export default function Home() {
     setErrors((current) => ({ ...current, [field]: undefined }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting) return;
+
     const form = new FormData(event.currentTarget);
     const name = String(form.get("name") ?? "").trim();
     const phone = String(form.get("phone") ?? "").trim();
@@ -646,43 +647,43 @@ export default function Home() {
       return;
     }
 
-    const campaignKeys = [
-      ["utm_source", "UTM source"],
-      ["utm_medium", "UTM medium"],
-      ["utm_campaign", "UTM campaign"],
-      ["utm_content", "UTM content"],
-      ["utm_term", "UTM term"],
-    ] as const;
+    setIsSubmitting(true);
+
     const searchParams = new URLSearchParams(window.location.search);
-    const campaignDetails = campaignKeys.flatMap(([key, label]) => {
-      const value = searchParams.get(key)?.trim();
-      return value ? [`${label}: ${value}`] : [];
-    });
-    const message = [
-      "Hello, I would like to request a consultation at Dr. Nishita's Clinic.",
-      "Name: " + name,
-      "Mobile: " + phone,
-      "Concern: " + area,
-      ...campaignDetails,
-    ].join("\n");
 
-    (
-      window as Window & {
-        dataLayer?: Array<Record<string, string>>;
+    try {
+      const response = await fetch("/api/telecrm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, area, landing_page_1: "brandlandingpage" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("TeleCRM lead submission failed");
       }
-    ).dataLayer?.push({
-      event: "consultation_form_submit",
-      treatment: "brand_consultation",
-      selected_concern: area,
-      utm_source: searchParams.get("utm_source") ?? "",
-      utm_medium: searchParams.get("utm_medium") ?? "",
-      utm_campaign: searchParams.get("utm_campaign") ?? "",
-    });
 
-    const whatsappUrl =
-      "https://wa.me/" + clinicWhatsApp + "?text=" + encodeURIComponent(message);
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    setSubmitted(true);
+      (
+        window as Window & {
+          dataLayer?: Array<Record<string, string>>;
+        }
+      ).dataLayer?.push({
+        event: "consultation_form_submit",
+        treatment: "brand_consultation",
+        selected_concern: area,
+        utm_source: searchParams.get("utm_source") ?? "",
+        utm_medium: searchParams.get("utm_medium") ?? "",
+        utm_campaign: searchParams.get("utm_campaign") ?? "",
+      });
+
+      window.location.assign("/thank-you");
+    } catch (error) {
+      console.error("TeleCRM lead submission failed", error);
+      setErrors((current) => ({
+        ...current,
+        submit: "We could not save your request. Please try again in a moment.",
+      }));
+      setIsSubmitting(false);
+    }
   }
 
   const consultationForm = (prefix = "") => (
@@ -887,11 +888,21 @@ export default function Home() {
             </div>
             {consultationForm()}
             <div className="form-submit">
-              <button type="submit" data-testid="consultation-submit">
-                {submitted ? "Continue on WhatsApp" : "Request a consultation"}
+              <button
+                type="submit"
+                data-testid="consultation-submit"
+                disabled={isSubmitting}
+                aria-busy={isSubmitting}
+              >
+                {isSubmitting ? "Saving your request..." : "Request a consultation"}
                 <ArrowRight size={18} aria-hidden="true" />
               </button>
             </div>
+            {errors.submit && (
+              <p className="form-submit-error" role="alert">
+                {errors.submit}
+              </p>
+            )}
             <p className="form-disclaimer">
               * By continuing, you agree to be contacted by the clinic.
             </p>
@@ -1331,11 +1342,11 @@ export default function Home() {
           <div id="privacy" data-reveal="left">
             <h2>Privacy notice</h2>
             <p>
-              Details entered in the consultation form are placed into a
-              WhatsApp message that you choose to send to Dr. Nishita&apos;s
-              Clinic. The clinic uses this information to respond to your
-              enquiry and coordinate care. To request access, correction or
-              deletion, email support@drnishitaranka.com.
+              Details entered in the consultation form are securely submitted
+              to Dr. Nishita&apos;s Clinic and included in the WhatsApp message
+              you choose to send. The clinic uses this information to respond
+              to your enquiry and coordinate care. To request access,
+              correction or deletion, email support@drnishitaranka.com.
             </p>
           </div>
           <div id="terms" data-reveal="right">
@@ -1412,11 +1423,21 @@ export default function Home() {
             </div>
             {consultationForm("sticky-")}
             <div className="sticky-form-submit">
-              <button type="submit" data-testid="sticky-consultation-submit">
-                {submitted ? "Continue on WhatsApp" : "Request a consultation"}
+              <button
+                type="submit"
+                data-testid="sticky-consultation-submit"
+                disabled={isSubmitting}
+                aria-busy={isSubmitting}
+              >
+                {isSubmitting ? "Saving your request..." : "Request a consultation"}
                 <ArrowRight size={18} aria-hidden="true" />
               </button>
             </div>
+            {errors.submit && (
+              <p className="form-submit-error" role="alert">
+                {errors.submit}
+              </p>
+            )}
             <p className="sticky-form-disclaimer">
               * By continuing, you agree to be contacted by the clinic.
             </p>
