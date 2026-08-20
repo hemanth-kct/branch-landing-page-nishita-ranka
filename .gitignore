@@ -42,5 +42,5 @@ next-env.d.ts
 /work/
 /tmp/
 
-.claude/
-.vscode/launch.json
+# .claude/
+# .vscode/launch.json
