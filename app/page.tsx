@@ -1023,13 +1023,13 @@ export default function Home() {
               </span>
             ))}
           </div>
-          <button
+          {/* <button
             type="button"
             className="primary-button doctor-book-button"
             onClick={() => setIsBookingModalOpen(true)}
           >
             Book a Consultation <ArrowRight size={18} aria-hidden="true" />
-          </button>
+          </button> */}
         </div>
       </section>
 
