@@ -417,8 +417,10 @@ export default function Home() {
     useState<MobileCtaTone>("on-light");
   const [reviewsPaused, setReviewsPaused] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const stickyFormRef = useRef<HTMLElement>(null);
   const stickyCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const bookingCloseButtonRef = useRef<HTMLButtonElement>(null);
   const mobileCtaRef = useRef<HTMLButtonElement>(null);
   const stickyPhaseRef = useRef<StickyFormPhase>("hidden");
   const stickyModeRef = useRef<StickyFormMode | null>(null);
@@ -561,6 +563,28 @@ export default function Home() {
 
     return () => window.cancelAnimationFrame(focusFrame);
   }, [mobileConsultationOpen]);
+
+  useEffect(() => {
+    if (!isBookingModalOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      bookingCloseButtonRef.current?.focus({ preventScroll: true });
+    });
+
+    function handleKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") setIsBookingModalOpen(false);
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+      window.cancelAnimationFrame(focusFrame);
+    };
+  }, [isBookingModalOpen]);
 
   useEffect(() => {
     const revealElements = Array.from(
@@ -733,7 +757,7 @@ export default function Home() {
         )}
       </div>
       <ConcernDropdown
-        className={prefix ? "sticky-area-field" : undefined}
+        className={prefix === "sticky-" ? "sticky-area-field" : undefined}
         id={`${prefix}area`}
         label="Primary concern"
         placeholder="Select a concern"
@@ -824,8 +848,8 @@ export default function Home() {
             <div className="hero-media-frame">
               <Image
                 className="hero-media hero-media-desktop"
-                src="/brand/hero-clinic-doctor.jpg"
-                alt="Dr. Nishita Ranka inside her dermatology and aesthetics clinic treatment room"
+                src="/brand/hero-doctor-saree.jpg"
+                alt="Dr. Nishita Ranka, dermatologist"
                 fill
                 priority
                 unoptimized
@@ -833,8 +857,8 @@ export default function Home() {
               />
               <Image
                 className="hero-media hero-media-mobile"
-                src="/brand/hero-clinic-doctor.jpg"
-                alt="Dr. Nishita Ranka inside her dermatology and aesthetics clinic treatment room"
+                src="/brand/hero-doctor-saree.jpg"
+                alt="Dr. Nishita Ranka, dermatologist"
                 fill
                 priority
                 unoptimized
@@ -999,6 +1023,13 @@ export default function Home() {
               </span>
             ))}
           </div>
+          <button
+            type="button"
+            className="primary-button doctor-book-button"
+            onClick={() => setIsBookingModalOpen(true)}
+          >
+            Book a Consultation <ArrowRight size={18} aria-hidden="true" />
+          </button>
         </div>
       </section>
 
@@ -1459,6 +1490,65 @@ export default function Home() {
       >
         Request a consultation <ArrowRight size={18} aria-hidden="true" />
       </button>
+
+      {isBookingModalOpen && (
+        <div
+          className="booking-modal-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setIsBookingModalOpen(false);
+            }
+          }}
+        >
+          <div
+            className="booking-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Book a consultation"
+          >
+            <button
+              ref={bookingCloseButtonRef}
+              type="button"
+              className="booking-modal-close"
+              onClick={() => setIsBookingModalOpen(false)}
+              aria-label="Close"
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+            <form
+              className="consultation-form booking-modal-form"
+              onSubmit={handleSubmit}
+              data-form-prefix="modal-"
+              noValidate
+            >
+              <div className="form-heading">
+                <h2>Tell us what you&apos;d like help with.</h2>
+                <p>Three details. Less than a minute.</p>
+              </div>
+              {consultationForm("modal-")}
+              <div className="form-submit">
+                <button
+                  type="submit"
+                  data-testid="booking-modal-submit"
+                  disabled={isSubmitting}
+                  aria-busy={isSubmitting}
+                >
+                  {isSubmitting ? "Saving your request..." : "Request a consultation"}
+                  <ArrowRight size={18} aria-hidden="true" />
+                </button>
+              </div>
+              {errors.submit && (
+                <p className="form-submit-error" role="alert">
+                  {errors.submit}
+                </p>
+              )}
+              <p className="form-disclaimer">
+                * By continuing, you agree to be contacted by the clinic.
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
