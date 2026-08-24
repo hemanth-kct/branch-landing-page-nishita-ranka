@@ -830,7 +830,7 @@ export default function Home() {
                   />
                 ))}
               </span>
-              <span className="rating-count">700+ patient reviews</span>
+              <span className="rating-count">13k Happy Customers</span>
             </div>
             <p
               className="eyebrow hero-reveal"
@@ -857,8 +857,8 @@ export default function Home() {
               />
               <Image
                 className="hero-media hero-media-mobile"
-                src="/brand/hero-doctor-saree.jpg"
-                alt="Dr. Nishita Ranka, dermatologist"
+                src="/brand/hero-clinic-interior.jpg"
+                alt="Dr. Nishita's Clinic reception and waiting area"
                 fill
                 priority
                 unoptimized
