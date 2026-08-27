@@ -29,6 +29,7 @@ import {
 
 const clinicPhoneDisplay = "+91 93812 19187";
 const clinicPhoneHref = "tel:+919381219187";
+const leadApiUrl = "https://api.drnishitaranka.in/v1/leads";
 
 const concernOptions = [
   "Skin",
@@ -674,16 +675,50 @@ export default function Home() {
     setIsSubmitting(true);
 
     const searchParams = new URLSearchParams(window.location.search);
+    const gclid =
+      searchParams.get("gclid")?.trim() ||
+      searchParams.get("gcl_id")?.trim() ||
+      "";
+
+    fetch("/api/telecrm", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, phone, area, landing_page_1: "brandlandingpage" }),
+      keepalive: true,
+    }).catch((error) => {
+      console.error("TeleCRM lead submission failed", error);
+    });
 
     try {
-      const response = await fetch("/api/telecrm", {
+      const response = await fetch(leadApiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, area, landing_page_1: "brandlandingpage" }),
+        body: JSON.stringify({
+          stage: "complete",
+          name,
+          phone,
+          email: `lead+${digits}@drnishitaranka.in`,
+          landingPage: "Brand Landing Page",
+          treatmentAreas: [area],
+          plannedStart: "",
+          referrer: document.referrer || "Direct / none",
+          utmSource: searchParams.get("utm_source") || "direct",
+          utmMedium: searchParams.get("utm_medium") || "none",
+          utmCampaign: searchParams.get("utm_campaign") || "Brand Landing Page",
+          utmContent: searchParams.get("utm_content") || "",
+          utmTerm: searchParams.get("utm_term") || "",
+          gclid,
+          formAnswers: { "Primary concern": area },
+          website: "",
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("TeleCRM lead submission failed");
+      const result = (await response.json()) as {
+        error?: string;
+        leadId?: string;
+      };
+      if (!response.ok || !result.leadId) {
+        throw new Error(result.error || "Lead submission failed");
       }
 
       (
@@ -694,18 +729,23 @@ export default function Home() {
         event: "consultation_form_submit",
         treatment: "brand_consultation",
         selected_concern: area,
+        lead_id: result.leadId,
         utm_source: searchParams.get("utm_source") ?? "",
         utm_medium: searchParams.get("utm_medium") ?? "",
         utm_campaign: searchParams.get("utm_campaign") ?? "",
+        utm_content: searchParams.get("utm_content") ?? "",
+        utm_term: searchParams.get("utm_term") ?? "",
+        gclid,
       });
 
       window.location.assign("/thank-you");
     } catch (error) {
-      console.error("TeleCRM lead submission failed", error);
+      console.error("Lead submission failed", error);
       setErrors((current) => ({
         ...current,
         submit: "We could not save your request. Please try again in a moment.",
       }));
+    } finally {
       setIsSubmitting(false);
     }
   }
