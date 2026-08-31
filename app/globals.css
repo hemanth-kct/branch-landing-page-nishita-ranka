@@ -667,7 +667,8 @@ summary:focus-visible {
 
 .proof-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  row-gap: 28px;
 }
 
 .proof-item {
@@ -678,7 +679,8 @@ summary:focus-visible {
   border-left: 1px solid rgba(255, 255, 255, 0.24);
 }
 
-.proof-item:first-child {
+.proof-item:first-child,
+.proof-item:nth-child(4) {
   padding-left: 0;
   border-left: 0;
 }
@@ -1454,6 +1456,8 @@ summary:focus-visible {
 
 .footer-meta nav {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 9px;
   color: var(--mauve-deep);
@@ -1665,7 +1669,8 @@ summary:focus-visible {
     row-gap: 26px;
   }
 
-  .proof-item:nth-child(3) {
+  .proof-item:nth-child(3),
+  .proof-item:nth-child(5) {
     padding-left: 0;
     border-left: 0;
   }
@@ -1973,6 +1978,7 @@ summary:focus-visible {
       "hero-stack"
       "intro"
       "mobile-cta"
+      "whatsapp-cta"
       "benefits";
   }
 
@@ -2068,6 +2074,17 @@ summary:focus-visible {
 
   .hero-mobile-cta:active {
     transform: translateY(1px);
+  }
+
+  .hero-whatsapp-cta {
+    grid-area: whatsapp-cta;
+    width: 100%;
+    min-height: 48px;
+    margin-bottom: 20px;
+    justify-content: center;
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    font-size: 15px;
   }
 
   .hero-benefits {
@@ -2643,5 +2660,139 @@ summary:focus-visible {
 @media (max-width: 560px) and (prefers-reduced-motion: reduce) {
   .publication-group {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Aesthetic-dermatology brand rebuild: shared section wrapper + new components */
+
+.content-section {
+  padding: 96px 0;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+}
+
+.content-section--dark {
+  color: var(--white);
+  background: rgb(86, 55, 70);
+  border-top: none;
+}
+
+.content-section--dark .eyebrow {
+  color: #edd2e3;
+}
+
+.pull-quote {
+  max-width: 760px;
+  margin: 40px auto 0;
+  color: var(--ink);
+  font-family: var(--font-display), Marcellus, Georgia, serif;
+  font-size: 26px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.content-section--dark .pull-quote {
+  color: var(--white);
+}
+
+.natural-copy p {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.natural-copy .natural-quote {
+  color: var(--ink);
+  font-weight: 700;
+  font-style: italic;
+}
+
+.doctor-philosophy-label {
+  margin-bottom: 6px;
+  color: var(--mauve-deep);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.doctor-philosophy {
+  font-style: italic;
+}
+
+.pull-quote-label {
+  margin: 0 0 20px;
+  color: var(--mauve-deep);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.content-section--dark .pull-quote-label {
+  color: #edd2e3;
+}
+
+.concern-card {
+  width: 100%;
+  border-top: 0;
+  border-left: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.concern-card:hover,
+.concern-card:focus-visible {
+  background: var(--soft);
+}
+
+.concern-card:active {
+  transform: translateY(1px);
+}
+
+.process-cta {
+  margin-top: 40px;
+}
+
+.products-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+}
+
+.product-pill {
+  padding: 12px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 1121px) {
+  .brand-care-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .content-section {
+    padding: 64px 0;
+  }
+
+  .pull-quote {
+    margin-top: 28px;
+    font-size: 21px;
+  }
+
+  .products-list {
+    margin-bottom: 28px;
   }
 }

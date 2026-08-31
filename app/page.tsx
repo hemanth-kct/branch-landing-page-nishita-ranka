@@ -3,10 +3,12 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  Award,
   BadgeCheck,
   Check,
   ChevronDown,
   Clock3,
+  GraduationCap,
   MapPin,
   MessageCircle,
   Phone,
@@ -29,41 +31,86 @@ import {
 
 const clinicPhoneDisplay = "+91 93812 19187";
 const clinicPhoneHref = "tel:+919381219187";
+const clinicWhatsAppHref = "https://wa.me/919381219187";
+const requestConsultationLabel = "Request an Aesthetic Consultation";
 const leadApiUrl = "https://api.drnishitaranka.in/v1/leads";
 
 const concernOptions = [
-  "Skin",
-  "Hair & Scalp",
-  "Acne & Acne Scars",
-  "Pigmentation",
-  "Anti-Ageing",
-  "Laser Hair Reduction",
-  "Facial & Skin Maintenance",
-  "Aesthetic Treatments",
-  "Not Sure",
-  "Other",
+  "Visible Signs of Ageing",
+  "Skin Quality & Texture",
+  "Facial Definition & Balance",
+  "Pigmentation & Uneven Tone",
+  "Acne Scars",
+  "Lower-Face / Double-Chin Concerns",
+  "Unwanted Hair",
+  "Not Sure?",
 ];
 
-const trustPoints = [
+const concernCards = [
   {
-    icon: Stethoscope,
-    title: "Dermatologist-led",
-    detail: "Care guided by medical assessment and clinical expertise",
+    title: "Visible Signs of Ageing",
+    body: "Fine lines, changing skin quality and other visible signs of ageing.",
+  },
+  {
+    title: "Skin Quality & Texture",
+    body: "Dullness, uneven texture, pores and overall skin quality.",
+  },
+  {
+    title: "Facial Definition & Balance",
+    body: "Concerns around facial proportions, definition and balance.",
+  },
+  {
+    title: "Pigmentation & Uneven Tone",
+    body: "Concerns related to pigmentation and uneven-looking skin tone.",
+  },
+  {
+    title: "Acne Scars",
+    body: "Texture and visible marks following acne.",
+  },
+  {
+    title: "Lower-Face / Double-Chin Concerns",
+    body: "Concerns around lower-face definition and contour.",
+  },
+  {
+    title: "Unwanted Hair",
+    body: "Facial or body hair concerns.",
+  },
+  {
+    title: "Not Sure?",
+    body: "I'd like a dermatologist's assessment.",
+  },
+];
+
+const authorityStats = [
+  {
+    icon: BadgeCheck,
+    value: "10+ Years",
+    label: "Dermatology Experience",
+  },
+  {
+    icon: Award,
+    value: "Dermatologist of the Year",
+    label: "South Region [organisation + year to be confirmed]",
+  },
+  {
+    icon: GraduationCap,
+    value: "Trainer & Educator",
+    label: "Global Trainer for Juvéderm, Restylane & aesthetic brands",
+  },
+  {
+    icon: Star,
+    value: "4.8 ★",
+    label: "Google Rating",
   },
   {
     icon: UserRoundCheck,
-    title: "Personalised",
-    detail: "Treatment plans built around individual concerns and goals",
-  },
-  {
-    icon: BadgeCheck,
-    title: "Comprehensive care",
-    detail: "Skin, hair and aesthetic concerns managed under one clinic",
+    value: "700+",
+    label: "Google Reviews",
   },
   {
     icon: ShieldCheck,
-    title: "Progress-focused",
-    detail: "Treatment plans reviewed and adapted according to response",
+    value: "13,000+",
+    label: "Patients Cared For",
   },
 ];
 
@@ -76,63 +123,162 @@ const publications = [
   { src: "/brand/hauterfly.png", alt: "Hauterfly" },
 ];
 
-const careAreas = [
+const assessmentConsiderations = [
   {
-    title: "Skin",
-    body: "Care for acne, pigmentation, uneven tone, texture, sensitivity and other skin concerns.",
+    title: "Facial Anatomy & Proportions",
+    body: "Understanding the structure and balance of your face.",
   },
   {
-    title: "Hair & Scalp",
-    body: "Assessment and treatment planning for hair fall, thinning, alopecia, postpartum hair loss, dandruff and scalp concerns.",
+    title: "Skin Quality",
+    body: "Relevant skin characteristics, texture and overall quality.",
   },
   {
-    title: "Laser Hair Reduction",
-    body: "Dermatologist-guided Laser Hair Reduction with treatment planning according to skin and hair characteristics.",
+    title: "Ageing Pattern",
+    body: "Understanding how your individual features are changing over time.",
   },
   {
-    title: "Chemical Peels",
-    body: "Personalised peel protocols selected according to skin type, concern and treatment goals.",
+    title: "Your Concern",
+    body: "What you actually want to improve.",
   },
   {
-    title: "Medi Facials",
-    body: "Clinical facial protocols designed around concerns such as hydration, dullness, congestion and skin maintenance.",
+    title: "Your Expectations",
+    body: "The degree of change you are comfortable with.",
   },
   {
-    title: "Aesthetic Dermatology",
-    body: "Personalised aesthetic treatments for suitable concerns related to skin quality, ageing and appearance.",
+    title: "Medical Suitability",
+    body: "Your history, previous treatments and clinical suitability.",
   },
 ];
 
-const approachSteps = [
+const credentialItems = [
+  {
+    title: "Dermatologist of the Year",
+    body: "Recognised as Dermatologist of the Year — South region. [Exact awarding organisation and year to be confirmed with the clinic.]",
+  },
+  {
+    title: "Trainer / Educator",
+    body: "Global Trainer for Juvéderm, Restylane and other aesthetic brands.",
+  },
+  {
+    title: "Faculty & Speaker",
+    body: "International faculty and speaker in anti-ageing and Indian skin science.",
+  },
+  {
+    title: "International Training",
+    body: "Advanced training across France, South Korea, UAE and Singapore.",
+  },
+  {
+    title: "Advanced Anatomy Training",
+    body: "Cadaver-trained in facial anatomy and injectables.",
+  },
+  {
+    title: "Education & Memberships",
+    body: "MD in Dermatology. Life member, IADVL, IADVL National Resident Committee, Indian Medical Association, and Association of Cutaneous Surgeons.",
+  },
+];
+
+const aestheticCapabilities = [
+  {
+    title: "General Aesthetic Dermatology",
+    body: "Aesthetic care planned around your individual skin, facial features and concerns.",
+  },
+  {
+    title: "Skin Quality & Rejuvenation",
+    body: "Approaches focused on texture, pigmentation, hydration, collagen support and overall skin quality.",
+  },
+  {
+    title: "Facial Rejuvenation",
+    body: "Options for visible signs of ageing, facial balance and definition.",
+  },
+  {
+    title: "Acne Scars & Texture",
+    body: "Treatment approaches selected according to scar type, skin characteristics and individual response.",
+  },
+  {
+    title: "Pigmentation",
+    body: "Assessment-led approaches for uneven tone and pigmentation concerns.",
+  },
+  {
+    title: "Unwanted Hair",
+    body: "Laser-based and other appropriate approaches for unwanted facial or body hair.",
+  },
+];
+
+const productItems = ["JUVÉDERM", "Restylane", "TEOXANE / TEOSYAL", "Sculptra", "HArmonyCa"];
+
+const technologyItems = [
+  {
+    title: "Skin Resurfacing",
+    body: "For selected concerns involving texture, pigmentation and skin quality.",
+  },
+  {
+    title: "Energy-Based Treatments",
+    body: "Technology selected according to skin and treatment objectives.",
+  },
+  {
+    title: "Skin Rejuvenation",
+    body: "Approaches designed to support skin quality and visible rejuvenation.",
+  },
+  {
+    title: "Hair & Scalp Technology",
+    body: "Technology-led approaches selected according to the underlying concern.",
+  },
+];
+
+const consultationJourneySteps = [
   {
     number: "01",
-    title: "Understand",
-    body: "Your concerns, history, previous treatments and goals are discussed during consultation.",
+    title: "Tell Us What You'd Like to Improve",
+    body: "You don't need to know the treatment name.",
   },
   {
     number: "02",
-    title: "Assess",
-    body: "Your skin, hair or aesthetic concern is evaluated to understand what may be contributing to it and what needs to be addressed.",
+    title: "Dermatologist-Led Assessment",
+    body: "Relevant skin characteristics, facial anatomy, history and goals are assessed.",
   },
   {
     number: "03",
-    title: "Personalise",
-    body: "A treatment plan is created based on your needs, suitability and goals rather than applying the same protocol to everyone.",
+    title: "Clinical Photography",
+    body: "Where appropriate, photography helps document concerns and monitor progress.",
   },
   {
     number: "04",
+    title: "Understand Your Options",
+    body: "Possible approaches, expected outcomes, limitations, downtime and alternatives are discussed.",
+  },
+  {
+    number: "05",
+    title: "Build Your Plan",
+    body: "Treatment may involve one modality, a combination approach, staged care — or no treatment.",
+  },
+  {
+    number: "06",
     title: "Review",
-    body: "Progress can be monitored over time, allowing treatment recommendations to evolve according to response.",
+    body: "Appropriate follow-up forms part of the treatment journey.",
   },
 ];
 
-const helpAreas = [
-  "Acne & Acne Scars",
-  "Pigmentation & Uneven Tone",
-  "Hair Fall & Hair Thinning",
-  "Unwanted Hair",
-  "Dullness & Skin Texture",
-  "Ageing & Skin Quality",
+const clinicalCaseFields = [
+  {
+    title: "Concern",
+    body: "[What the patient wanted to address]",
+  },
+  {
+    title: "Treatment Approach",
+    body: "[The modality or combination approach used]",
+  },
+  {
+    title: "Timeline",
+    body: "[How long the treatment journey took]",
+  },
+  {
+    title: "Sessions",
+    body: "[Where relevant]",
+  },
+  {
+    title: "Outcome",
+    body: "[Documented clinical progress]",
+  },
 ];
 
 const reviews = [
@@ -165,29 +311,34 @@ const reviews = [
 
 const faqs = [
   {
-    question: "What treatments are available at Dr. Nishita's Clinic?",
+    question: "Do I need to know which treatment I want?",
     answer:
-      "The clinic provides dermatologist-led care across skin, hair and aesthetic concerns, including acne, pigmentation, hair loss, Laser Hair Reduction, Chemical Peels, Medi Facials and other clinical and aesthetic treatments.",
+      "No. You can start with your concern rather than a treatment name. The consultation is designed to determine what may be appropriate for you.",
   },
   {
-    question: "How do I know which treatment is right for me?",
+    question: "How does Dr. Nishita decide which treatment is right for me?",
     answer:
-      "You do not need to select a treatment before consultation. Your concerns, medical history and goals can first be assessed before appropriate treatment options are discussed.",
+      "Treatment planning considers your facial anatomy, skin quality, ageing pattern, concern, expectations, previous treatments and medical suitability.",
   },
   {
-    question: "Can I consult for more than one concern?",
+    question: "Will I be recommended a combination of treatments?",
     answer:
-      "Yes. If you have multiple skin, hair or aesthetic concerns, these can be discussed during consultation so they can be prioritised and an appropriate treatment plan developed.",
+      "Where clinically appropriate, treatment may involve a single modality, combination approach or staged care. Not every concern requires multiple treatments.",
   },
   {
-    question: "Are treatments personalised?",
+    question: "Will my treatment make me look different?",
     answer:
-      "Treatment recommendations are made according to the concern, individual characteristics, medical history, suitability and treatment goals rather than following the same protocol for every patient.",
+      "Aesthetic treatment does not have to mean dramatic change. Treatment can be planned around your existing features and the degree of change you are comfortable with.",
   },
   {
-    question: "Where is the clinic located?",
+    question: "Does the clinic treat both medical and aesthetic concerns?",
     answer:
-      "The clinic is on Road No. 7, 1st Floor, Sowbhagya Abode, beside Iran Embassy, Banjara Hills, Telangana 500034.",
+      "Yes. The clinic's wider offering spans clinical dermatology, skin, hair and aesthetic care.",
+  },
+  {
+    question: "What happens during the first consultation?",
+    answer:
+      "Your concern, relevant medical history, facial or skin characteristics and goals are assessed before appropriate options and treatment plans are discussed.",
   },
 ];
 
@@ -588,6 +739,41 @@ export default function Home() {
   }, [isBookingModalOpen]);
 
   useEffect(() => {
+    if (window.matchMedia("(max-width: 560px)").matches) return;
+
+    let armed = false;
+    const armTimer = window.setTimeout(() => {
+      armed = true;
+    }, 4000);
+
+    function handleMouseLeave(event: MouseEvent) {
+      if (!armed || event.clientY > 0) return;
+
+      let alreadyShown = false;
+      try {
+        alreadyShown = sessionStorage.getItem("exitIntentShown") === "1";
+      } catch {
+        alreadyShown = false;
+      }
+      if (alreadyShown) return;
+
+      try {
+        sessionStorage.setItem("exitIntentShown", "1");
+      } catch {
+        // sessionStorage unavailable (e.g. private browsing); allow it to show anyway
+      }
+
+      setIsBookingModalOpen(true);
+    }
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      window.clearTimeout(armTimer);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+
+  useEffect(() => {
     const revealElements = Array.from(
       document.querySelectorAll<HTMLElement>("[data-reveal]"),
     );
@@ -643,6 +829,22 @@ export default function Home() {
   function updateField(field: keyof FormValues, value: string) {
     setFormValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
+  }
+
+  function handleConcernSelect(concern: string) {
+    updateField("area", concern);
+
+    if (window.matchMedia("(max-width: 560px)").matches) {
+      openMobileConsultation();
+      return;
+    }
+
+    document
+      .getElementById("consultation")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.requestAnimationFrame(() => {
+      document.getElementById("area")?.focus();
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -870,20 +1072,20 @@ export default function Home() {
                   />
                 ))}
               </span>
-              <span className="rating-count">13k Happy Customers</span>
+              <span className="rating-count">13,000+ Patients Cared For</span>
             </div>
             <p
               className="eyebrow hero-reveal"
               style={{ "--delay": "150ms" } as CSSProperties}
             >
-              Dermatology, Hair &amp; Aesthetic Care in Banjara Hills, Hyderabad
+              Aesthetic Dermatology | Banjara Hills, Hyderabad
             </p>
             <h1
               id="hero-title"
               className="hero-reveal"
               style={{ "--delay": "220ms" } as CSSProperties}
             >
-              Real results for skin and hair. Designed for you.
+              Aesthetic Treatments, Led by a Dermatologist
             </h1>
             <div className="hero-media-frame">
               <Image
@@ -909,9 +1111,15 @@ export default function Home() {
               className="hero-intro hero-reveal"
               style={{ "--delay": "300ms" } as CSSProperties}
             >
-              Dermatologist-designed care for your skin and hair. We map out
-              personalised, clinical treatment plans to address your exact goals
-              and needs.
+              Whether you want to improve skin quality, soften visible signs
+              of ageing, enhance facial definition or simply understand your
+              options, your treatment should begin with an assessment, not a
+              procedure. At Dr. Nishita&apos;s Clinic, aesthetic treatment
+              plans are led by{" "}
+              <strong>
+                Dr. Nishita Ranka, Dermatologist with 10+ years of experience
+              </strong>
+              , and designed around your face, skin and individual goals.
             </p>
             <a
               className="hero-mobile-cta hero-reveal"
@@ -919,17 +1127,26 @@ export default function Home() {
               onClick={handleConsultationLinkClick}
               style={{ "--delay": "340ms" } as CSSProperties}
             >
-              Request a consultation
+              {requestConsultationLabel}
               <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a
+              className="text-link hero-whatsapp-cta hero-reveal"
+              href={clinicWhatsAppHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ "--delay": "350ms" } as CSSProperties}
+            >
+              <MessageCircle size={16} aria-hidden="true" /> WhatsApp the Clinic
             </a>
             <ul
               className="hero-benefits hero-reveal"
               style={{ "--delay": "360ms" } as CSSProperties}
             >
               {[
-                "Dermatologist-led skin, hair and aesthetic care",
-                "Personalised treatment planning",
-                "Clinical expertise with advanced treatment options",
+                "Dermatologist-led assessment before any treatment",
+                "Personalised, staged or combination treatment planning",
+                "Natural-looking outcomes built around your own features",
               ].map((benefit) => (
                 <li key={benefit}>
                   <Check size={18} aria-hidden="true" /> {benefit}
@@ -947,7 +1164,7 @@ export default function Home() {
             style={{ "--delay": "440ms" } as CSSProperties}
           >
             <div className="form-heading">
-              <h2>Tell us what you&apos;d like help with.</h2>
+              <h2>Tell us what you&apos;d like to improve.</h2>
               <p>Three details. Less than a minute.</p>
             </div>
             {consultationForm()}
@@ -958,7 +1175,7 @@ export default function Home() {
                 disabled={isSubmitting}
                 aria-busy={isSubmitting}
               >
-                {isSubmitting ? "Saving your request..." : "Request a consultation"}
+                {isSubmitting ? "Saving your request..." : requestConsultationLabel}
                 <ArrowRight size={18} aria-hidden="true" />
               </button>
             </div>
@@ -974,12 +1191,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="proof-band" aria-label="Clinic care principles">
+      <section className="proof-band" aria-label="Clinic authority and experience">
         <div className="section-inner proof-grid">
-          {trustPoints.map(({ icon: Icon, title, detail }, index) => (
+          {authorityStats.map(({ icon: Icon, value, label }, index) => (
             <div
               className="proof-item"
-              key={title}
+              key={value}
               data-reveal="rise"
               style={
                 { "--reveal-delay": `${index * 70}ms` } as CSSProperties
@@ -987,8 +1204,8 @@ export default function Home() {
             >
               <Icon size={24} strokeWidth={1.5} aria-hidden="true" />
               <div>
-                <strong>{title}</strong>
-                <span>{detail}</span>
+                <strong>{value}</strong>
+                <span>{label}</span>
               </div>
             </div>
           ))}
@@ -1030,6 +1247,91 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="content-section" aria-labelledby="concerns-title">
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Concerns</p>
+            <h2 id="concerns-title">What Would You Like to Improve?</h2>
+          </div>
+          <div className="brand-care-grid" aria-label="Aesthetic concerns">
+            {concernCards.map((concern, index) => (
+              <button
+                type="button"
+                className="brand-care-card concern-card"
+                key={concern.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 55}ms` } as CSSProperties
+                }
+                onClick={() => handleConcernSelect(concern.title)}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{concern.title}</h3>
+                <p>{concern.body}</p>
+              </button>
+            ))}
+          </div>
+          <a
+            className="primary-button brand-care-cta"
+            href="#consultation"
+            onClick={handleConsultationLinkClick}
+            data-reveal="fade"
+          >
+            Tell Us What Concerns You <ArrowRight size={18} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+
+      <section
+        className="content-section content-section--dark"
+        aria-labelledby="assessment-title"
+      >
+        <div className="section-inner">
+          <div className="section-heading split-heading" data-reveal="rise">
+            <div>
+              <p className="eyebrow">Assessment Philosophy</p>
+              <h2 id="assessment-title">
+                We don&apos;t start with a procedure. We start with an
+                assessment.
+              </h2>
+            </div>
+            <p>
+              A patient asking for one procedure may have a concern better
+              addressed by another approach. Sometimes a staged or
+              combination plan may be appropriate. And sometimes, no
+              treatment may be recommended.
+            </p>
+          </div>
+          <h3 className="pull-quote-label" data-reveal="fade">
+            Your assessment considers:
+          </h3>
+          <div className="brand-care-grid" aria-label="What your assessment considers">
+            {assessmentConsiderations.map((item, index) => (
+              <article
+                className="brand-care-card"
+                key={item.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <p className="pull-quote" data-reveal="fade">
+            The question isn&apos;t simply, &quot;What treatment can we
+            do?&quot;
+          </p>
+          <p className="pull-quote" data-reveal="fade">
+            It&apos;s, &quot;What would actually be appropriate for this
+            patient?&quot;
+          </p>
+        </div>
+      </section>
+
       <section className="doctor-section" aria-labelledby="doctor-title">
         <div className="doctor-media" data-reveal="left">
           <Image
@@ -1042,52 +1344,139 @@ export default function Home() {
           />
         </div>
         <div className="doctor-copy" data-reveal="right">
-          <p className="eyebrow">Dermatologist and founder</p>
-          <h2 id="doctor-title">Medical precision, made personal.</h2>
+          <p className="eyebrow">
+            Dermatologist | Trainer &amp; Educator | 10+ Years of Experience
+          </p>
+          <h2 id="doctor-title">Meet Dr. Nishita Ranka</h2>
           <p className="large-copy">
-            Dr. Nishita Ranka is a board-certified dermatologist with over eight
-            years of experience across clinical and aesthetic dermatology.
+            Dr. Nishita Ranka&apos;s work spans clinical and aesthetic
+            dermatology. Her approach to aesthetics begins with
+            understanding facial anatomy, skin quality, ageing patterns and
+            individual goals before discussing treatment.
           </p>
           <p>
-            At her Banjara Hills clinic, Dr. Ranka combines clinical dermatology
-            with aesthetic care to create treatment plans based on individual
-            concerns, skin or hair needs, medical history and personal goals.
+            Rather than approaching aesthetics as a menu of procedures, she
+            focuses on considered treatment plans and natural-looking
+            outcomes.
+          </p>
+          <p className="doctor-philosophy-label">Her philosophy</p>
+          <p className="doctor-philosophy">
+            &quot;The question is not what treatment can we do. It is what
+            would actually be appropriate for this patient.&quot;
           </p>
           <div className="doctor-signals">
             {[
-              { icon: BadgeCheck, text: "Board-certified dermatologist" },
-              { icon: ShieldCheck, text: "Clinical and aesthetic care" },
+              { icon: Stethoscope, text: "10+ Years Experience" },
+              { icon: ShieldCheck, text: "Assessment-Led Care" },
             ].map(({ icon: Icon, text }) => (
               <span key={text}>
                 <Icon size={20} aria-hidden="true" /> {text}
               </span>
             ))}
           </div>
-          {/* <button
-            type="button"
-            className="primary-button doctor-book-button"
-            onClick={() => setIsBookingModalOpen(true)}
-          >
-            Book a Consultation <ArrowRight size={18} aria-hidden="true" />
-          </button> */}
+          <a className="text-link" href="#credentials">
+            Know Dr. Nishita <ArrowRight size={16} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+
+      <section
+        className="content-section"
+        id="credentials"
+        aria-labelledby="credentials-title"
+      >
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Credentials</p>
+            <h2 id="credentials-title">Expertise backed by experience</h2>
+          </div>
+          <div className="brand-care-grid" aria-label="Credentials">
+            {credentialItems.map((item, index) => (
+              <article
+                className="brand-care-card"
+                key={item.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 60}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="content-section content-section--dark"
+        aria-labelledby="teaching-title"
+      >
+        <div className="section-inner">
+          <div className="section-heading split-heading" data-reveal="rise">
+            <div>
+              <p className="eyebrow">Professional Education</p>
+              <h2 id="teaching-title">Trusted to treat. Trusted to teach.</h2>
+            </div>
+            <p>
+              Dr. Nishita&apos;s work in aesthetics extends beyond treating
+              patients. She also contributes to professional education,
+              training doctors in areas including facial assessment,
+              anatomy and aesthetic techniques.
+            </p>
+          </div>
+          <p className="pull-quote" data-reveal="fade">
+            The same commitment to precision that guides patient care
+            informs the way she teaches other medical professionals.
+          </p>
+        </div>
+      </section>
+
+      <section className="content-section" aria-labelledby="natural-title">
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Natural-Looking Aesthetics</p>
+            <h2 id="natural-title">You should still look like you.</h2>
+            <p>
+              Aesthetic care does not have to mean dramatic change. The
+              objective may simply be improved skin quality, a more rested
+              appearance, softer visible signs of ageing, better definition,
+              improved balance or thoughtful maintenance over time.
+            </p>
+          </div>
+          <div className="natural-copy" data-reveal="fade">
+            <p>
+              Treatment planning respects your individual facial features
+              and the degree of change you are comfortable with.
+            </p>
+            <p className="natural-quote">
+              &quot;I want to look better. I don&apos;t want to look
+              overdone.&quot;
+            </p>
+            <p>
+              <strong>We understand.</strong> Treatment decisions are made
+              around your anatomy, concerns and goals, with outcomes that
+              remain personal to you.
+            </p>
+          </div>
         </div>
       </section>
 
       <section className="brand-care-section" aria-labelledby="brand-care-title">
         <div className="section-inner">
           <div className="technology-heading" data-reveal="rise">
-            <p className="eyebrow">Skin, Hair &amp; Aesthetic Care</p>
+            <p className="eyebrow">Treatment Capabilities</p>
             <h2 id="brand-care-title">
-              Expertise across the concerns that bring you here
+              A complete approach to aesthetic dermatology
             </h2>
             <p>
-              From everyday skin and hair concerns to advanced aesthetic
-              treatments, care begins by understanding your concerns and
-              determining an appropriate treatment pathway.
+              From skin quality to facial definition, treatment options are
+              selected according to your assessment and goals.
             </p>
           </div>
           <div className="brand-care-grid" aria-label="Areas of care">
-            {careAreas.map((area, index) => (
+            {aestheticCapabilities.map((area, index) => (
               <article
                 className="brand-care-card"
                 key={area.title}
@@ -1108,8 +1497,82 @@ export default function Home() {
             onClick={handleConsultationLinkClick}
             data-reveal="fade"
           >
-            Explore your treatment options <ArrowRight size={18} aria-hidden="true" />
+            Explore Your Treatment Options <ArrowRight size={18} aria-hidden="true" />
           </a>
+        </div>
+      </section>
+
+      <section
+        className="content-section content-section--dark"
+        aria-labelledby="products-title"
+      >
+        <div className="section-inner">
+          <div className="section-heading split-heading" data-reveal="rise">
+            <div>
+              <p className="eyebrow">Products</p>
+              <h2 id="products-title">
+                Established products used in our practice
+              </h2>
+            </div>
+            <p>
+              Where an injectable treatment is clinically appropriate,
+              product selection depends on the indication, facial anatomy,
+              treatment objective and individual assessment.
+            </p>
+          </div>
+          <ul
+            className="products-list"
+            aria-label="Products used in practice"
+            data-reveal="rise"
+          >
+            {productItems.map((product) => (
+              <li className="product-pill" key={product}>
+                {product}
+              </li>
+            ))}
+          </ul>
+          <p className="pull-quote" data-reveal="fade">
+            Products support the treatment plan. They do not define it.
+          </p>
+        </div>
+      </section>
+
+      <section
+        className="content-section technology-section"
+        aria-labelledby="technology-title"
+      >
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Technology</p>
+            <h2 id="technology-title">
+              Technology with a clinical purpose
+            </h2>
+            <p>
+              Technology is only as valuable as the way it is selected and
+              used. Treatment technologies are chosen according to the
+              concern being addressed, skin characteristics and desired
+              treatment approach.
+            </p>
+          </div>
+          <div
+            className="brand-care-grid brand-care-grid--4"
+            aria-label="Treatment technology"
+          >
+            {technologyItems.map((item, index) => (
+              <article
+                className="brand-care-card"
+                key={item.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 70}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1117,8 +1580,10 @@ export default function Home() {
         <div className="section-inner">
           <div className="section-heading split-heading" data-reveal="rise">
             <div>
-              <p className="eyebrow">The Clinic Approach</p>
-              <h2 id="process-title">Start with the concern. Build the right plan.</h2>
+              <p className="eyebrow">Consultation Journey</p>
+              <h2 id="process-title">
+                Your consultation comes before your treatment.
+              </h2>
             </div>
             <p>
               Different concerns, and different people, need different
@@ -1127,7 +1592,7 @@ export default function Home() {
             </p>
           </div>
           <div className="process-grid">
-            {approachSteps.map((step, index) => (
+            {consultationJourneySteps.map((step, index) => (
               <article
                 className="process-step"
                 key={step.number}
@@ -1142,6 +1607,14 @@ export default function Home() {
               </article>
             ))}
           </div>
+          <a
+            className="primary-button process-cta"
+            href="#consultation"
+            onClick={handleConsultationLinkClick}
+            data-reveal="fade"
+          >
+            {requestConsultationLabel} <ArrowRight size={18} aria-hidden="true" />
+          </a>
           <p className="medical-note" data-reveal="fade">
             Consultation helps determine which treatment pathway may be
             appropriate for your concern. Suitability and response vary.
@@ -1149,80 +1622,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="areas-section" aria-labelledby="areas-title">
-        <div className="section-inner areas-layout">
-          <div className="areas-copy" data-reveal="left">
-            <p className="eyebrow">What can we help with?</p>
-            <h2 id="areas-title">What would you like to address?</h2>
-            <p>
-              Explore dermatologist-led care across skin, hair and aesthetic
-              concerns.
-            </p>
-            <a
-              className="primary-button"
-              href="#consultation"
-              onClick={handleConsultationLinkClick}
-            >
-              Discuss your concern <ArrowRight size={18} aria-hidden="true" />
-            </a>
-          </div>
-          <div className="areas-list" aria-label="Treatment areas">
-            {helpAreas.map((area, index) => (
-              <div
-                key={area}
-                data-reveal="right"
-                style={
-                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
-                }
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{area}</strong>
-                <Check size={18} aria-hidden="true" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="treatment-choice-section"
-        aria-labelledby="treatment-choice-title"
-      >
-        <div className="section-inner treatment-choice-inner">
-          <div data-reveal="left">
-            <p className="eyebrow">Not sure which treatment you need?</p>
-            <h2 id="treatment-choice-title">
-              You don&apos;t need to choose a treatment before you arrive.
-            </h2>
-          </div>
-          <div className="treatment-choice-copy" data-reveal="right">
-            <p>
-              If you know what you want to improve but aren&apos;t sure which
-              treatment is appropriate, begin with a consultation. Your concern
-              can be assessed before suitable options are discussed with you.
-            </p>
-            <p>
-              Whether you&apos;re dealing with persistent acne, pigmentation,
-              hair fall, unwanted hair or simply want to improve the overall
-              quality of your skin, the starting point remains the same:
-              understanding what your skin or hair actually needs.
-            </p>
-            <a
-              className="primary-button"
-              href="#consultation"
-              onClick={handleConsultationLinkClick}
-            >
-              Request a consultation <ArrowRight size={18} aria-hidden="true" />
-            </a>
-          </div>
-        </div>
-      </section>
-
       <section className="reviews-section" aria-labelledby="reviews-title">
         <div className="section-inner">
           <div className="review-heading" data-reveal="rise">
             <div>
-              <p className="eyebrow">Patient voices</p>
+              <p className="eyebrow">Trusted by Patients</p>
               <h2 id="reviews-title">
                 The experience matters as much as the plan.
               </h2>
@@ -1292,11 +1696,43 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="content-section" aria-labelledby="cases-title">
+        <div className="section-inner">
+          <div className="technology-heading" data-reveal="rise">
+            <p className="eyebrow">Clinical Cases</p>
+            <h2 id="cases-title">
+              Real concerns. Considered treatment plans.
+            </h2>
+          </div>
+          <div className="brand-care-grid" aria-label="Case study fields">
+            {clinicalCaseFields.map((field, index) => (
+              <article
+                className="brand-care-card"
+                key={field.title}
+                data-reveal="rise"
+                style={
+                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
+                }
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{field.title}</h3>
+                <p>{field.body}</p>
+              </article>
+            ))}
+          </div>
+          <p className="medical-note" data-reveal="fade">
+            Individual outcomes vary. Case studies will be published here
+            once consented, standardised before-and-after documentation is
+            available from the clinic.
+          </p>
+        </div>
+      </section>
+
       <section className="faq-section" aria-labelledby="faq-title">
         <div className="section-inner faq-layout">
           <div className="faq-intro" data-reveal="left">
             <p className="eyebrow">Clear answers</p>
-            <h2 id="faq-title">Questions worth asking before treatment.</h2>
+            <h2 id="faq-title">Questions before your first consultation.</h2>
             <p>
               These answers are general information. Your consultation
               determines what is appropriate for you.
@@ -1351,12 +1787,12 @@ export default function Home() {
         <div className="final-cta-inner" data-reveal="rise">
           <p className="eyebrow">Banjara Hills, Hyderabad</p>
           <h2 id="final-cta-title">
-            Start with the concern. We&apos;ll help plan the next step.
+            Start with what you want to improve.
           </h2>
           <p>
-            Tell us what you would like help with. The clinic team will help
-            arrange a consultation at Banjara Hills and guide you through
-            suitable skin, hair or aesthetic care options.
+            You don&apos;t need to know the procedure. Tell us what
+            concerns you, and begin with a dermatologist-led assessment
+            designed around your skin, face and individual goals.
           </p>
           <div className="cta-actions">
             <a
@@ -1364,17 +1800,27 @@ export default function Home() {
               href="#consultation"
               onClick={handleConsultationLinkClick}
             >
-              Request a consultation <ArrowRight size={18} aria-hidden="true" />
+              {requestConsultationLabel} <ArrowRight size={18} aria-hidden="true" />
             </a>
-            {/* <a className="secondary-button" href={clinicPhoneHref}>
-              <Phone size={18} aria-hidden="true" /> Call {clinicPhoneDisplay}
-            </a> */}
+            <a
+              className="secondary-button"
+              href={clinicWhatsAppHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle size={18} aria-hidden="true" /> WhatsApp the Clinic
+            </a>
           </div>
         </div>
       </section>
 
       <section className="clinic-details" aria-label="Clinic details">
         <div className="section-inner">
+          <div className="clinic-details-heading" data-reveal="rise">
+            <p className="eyebrow">Skin | Hair | Aesthetics</p>
+            <h2 id="clinic-info">Dr. Nishita&apos;s Clinic</h2>
+            <p>Banjara Hills, Hyderabad</p>
+          </div>
           <div className="details-grid">
             <div data-reveal="rise">
               <MapPin size={22} aria-hidden="true" />
@@ -1424,9 +1870,9 @@ export default function Home() {
             <h2>Terms and medical note</h2>
             <p>
               This page provides general information and does not replace a
-              medical consultation. Treatment suitability, planning, pricing and
-              expected response are determined after individual assessment.
-              Results vary.
+              medical consultation. Treatment suitability, recommendations,
+              pricing, expected outcomes and treatment plans are determined
+              following individual assessment. Individual results vary.
             </p>
           </div>
         </div>
@@ -1444,7 +1890,17 @@ export default function Home() {
               loading="eager"
             />
             <div className="footer-meta">
-              <nav aria-label="Legal links">
+              <nav aria-label="Footer links">
+                <a href="#doctor-title">About</a>
+                <span aria-hidden="true">|</span>
+                <a href="#concerns-title">Skin</a>
+                <span aria-hidden="true">|</span>
+                <a href="#concerns-title">Hair</a>
+                <span aria-hidden="true">|</span>
+                <a href="#brand-care-title">Aesthetics</a>
+                <span aria-hidden="true">|</span>
+                <a href="#clinic-info">Contact</a>
+                <span aria-hidden="true">|</span>
                 <a href="#privacy">Privacy Policy</a>
                 <span aria-hidden="true">|</span>
                 <a href="#terms">Terms &amp; Conditions</a>
@@ -1490,7 +1946,7 @@ export default function Home() {
             noValidate
           >
             <div className="sticky-form-heading">
-              <h2>Tell us what you&apos;d like help with.</h2>
+              <h2>Tell us what you&apos;d like to improve.</h2>
             </div>
             {consultationForm("sticky-")}
             <div className="sticky-form-submit">
@@ -1500,7 +1956,7 @@ export default function Home() {
                 disabled={isSubmitting}
                 aria-busy={isSubmitting}
               >
-                {isSubmitting ? "Saving your request..." : "Request a consultation"}
+                {isSubmitting ? "Saving your request..." : requestConsultationLabel}
                 <ArrowRight size={18} aria-hidden="true" />
               </button>
             </div>
@@ -1528,7 +1984,7 @@ export default function Home() {
         tabIndex={mobileCtaInteractive ? undefined : -1}
         onClick={openMobileConsultation}
       >
-        Request a consultation <ArrowRight size={18} aria-hidden="true" />
+        {requestConsultationLabel} <ArrowRight size={18} aria-hidden="true" />
       </button>
 
       {isBookingModalOpen && (
@@ -1562,7 +2018,7 @@ export default function Home() {
               noValidate
             >
               <div className="form-heading">
-                <h2>Tell us what you&apos;d like help with.</h2>
+                <h2>Tell us what you&apos;d like to improve.</h2>
                 <p>Three details. Less than a minute.</p>
               </div>
               {consultationForm("modal-")}
@@ -1573,7 +2029,7 @@ export default function Home() {
                   disabled={isSubmitting}
                   aria-busy={isSubmitting}
                 >
-                  {isSubmitting ? "Saving your request..." : "Request a consultation"}
+                  {isSubmitting ? "Saving your request..." : requestConsultationLabel}
                   <ArrowRight size={18} aria-hidden="true" />
                 </button>
               </div>
