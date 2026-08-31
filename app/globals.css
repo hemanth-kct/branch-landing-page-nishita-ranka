@@ -949,7 +949,6 @@ summary:focus-visible {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: start;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .process-step {
