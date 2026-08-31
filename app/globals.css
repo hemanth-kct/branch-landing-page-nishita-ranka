@@ -2680,6 +2680,14 @@ summary:focus-visible {
   color: #edd2e3;
 }
 
+.content-section--dark .brand-care-card {
+  background: var(--white);
+}
+
+.content-section--dark .brand-care-card h3 {
+  color: var(--ink);
+}
+
 .pull-quote {
   max-width: 760px;
   margin: 40px auto 0;
