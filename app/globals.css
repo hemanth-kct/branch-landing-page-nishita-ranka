@@ -1340,7 +1340,6 @@ summary:focus-visible {
 }
 
 .clinic-details-heading {
-  max-width: 760px;
   padding-bottom: 40px;
   margin-bottom: 44px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.24);
