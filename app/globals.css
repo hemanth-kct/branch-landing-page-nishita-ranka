@@ -2762,6 +2762,7 @@ summary:focus-visible {
 .products-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 14px;
   margin: 0 0 40px;
   padding: 0;
