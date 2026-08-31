@@ -90,7 +90,7 @@ const authorityStats = [
   {
     icon: Award,
     value: "Dermatologist of the Year",
-    label: "South Region [organisation + year to be confirmed]",
+    label: "South Region — Economic Times & Financial Express, 2025 & 2026",
   },
   {
     icon: GraduationCap,
@@ -153,7 +153,7 @@ const assessmentConsiderations = [
 const credentialItems = [
   {
     title: "Dermatologist of the Year",
-    body: "Recognised as Dermatologist of the Year — South region. [Exact awarding organisation and year to be confirmed with the clinic.]",
+    body: "Recognised as Dermatologist of the Year — South Region by Economic Times and Financial Express, 2025 and 2026.",
   },
   {
     title: "Trainer / Educator",
