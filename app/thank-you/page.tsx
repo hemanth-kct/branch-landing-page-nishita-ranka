@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+
 const whatsappHref =
   "https://wa.me/919381218003?text=Hello%2C%20I%20have%20submitted%20a%20consultation%20request.";
 
