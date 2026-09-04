@@ -258,29 +258,6 @@ const consultationJourneySteps = [
   },
 ];
 
-const clinicalCaseFields = [
-  {
-    title: "Concern",
-    body: "[What the patient wanted to address]",
-  },
-  {
-    title: "Treatment Approach",
-    body: "[The modality or combination approach used]",
-  },
-  {
-    title: "Timeline",
-    body: "[How long the treatment journey took]",
-  },
-  {
-    title: "Sessions",
-    body: "[Where relevant]",
-  },
-  {
-    title: "Outcome",
-    body: "[Documented clinical progress]",
-  },
-];
-
 const reviews = [
   {
     quote:
@@ -1692,38 +1669,6 @@ export default function Home() {
           <p className="medical-note" data-reveal="fade">
             Selected excerpts from patient reviews. Individual experiences and
             results vary.
-          </p>
-        </div>
-      </section>
-
-      <section className="content-section" aria-labelledby="cases-title">
-        <div className="section-inner">
-          <div className="technology-heading" data-reveal="rise">
-            <p className="eyebrow">Clinical Cases</p>
-            <h2 id="cases-title">
-              Real concerns. Considered treatment plans.
-            </h2>
-          </div>
-          <div className="brand-care-grid" aria-label="Case study fields">
-            {clinicalCaseFields.map((field, index) => (
-              <article
-                className="brand-care-card"
-                key={field.title}
-                data-reveal="rise"
-                style={
-                  { "--reveal-delay": `${index * 65}ms` } as CSSProperties
-                }
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>{field.title}</h3>
-                <p>{field.body}</p>
-              </article>
-            ))}
-          </div>
-          <p className="medical-note" data-reveal="fade">
-            Individual outcomes vary. Case studies will be published here
-            once consented, standardised before-and-after documentation is
-            available from the clinic.
           </p>
         </div>
       </section>
